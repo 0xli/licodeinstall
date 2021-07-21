@@ -261,6 +261,24 @@ nuvedb  0.000GB
 >db.erizoControllers.totalSize()
 36864
 >db.rooms.count()
+> db.rooms.find().pretty()
+{
+	"_id" : ObjectId("60d42a74a6ca1f38e3e320bc"),
+	"name" : "basicExampleRoom",
+	"data" : {
+		"basicExampleRoom" : true
+	},
+	"mediaConfiguration" : "default",
+	"erizoControllerId" : null
+}
+{
+	"_id" : ObjectId("60ebb8fe29ad24fbdb5ba00f"),
+	"name" : "ios",
+	"data" : {
+		"type" : "videoconference",
+		"public" : true
+	}
+}
 
 ```
 
