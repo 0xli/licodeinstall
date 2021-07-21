@@ -244,7 +244,27 @@ root     15589 15304  3 10:06 pts/0    00:00:00 node basicServer.js
 
 ```
 
-## 3. Disk usage
+## 3. run and maintain
+### 3.1 run db first
+https://www.runoob.com/mongodb/mongodb-osx-install.html
+```
+start mongodb
+#mongod --dbpath build/db --logpath build/mongoa.log --fork
+command line
+#mongo
+>show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+nuvedb  0.000GB
+>use nuvedb
+>db.erizoControllers.totalSize()
+36864
+>db.rooms.count()
+
+```
+
+## 4. Disk usage
 ```
 # df -h
 Filesystem      Size  Used Avail Use% Mounted on
