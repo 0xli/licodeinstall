@@ -1,4 +1,5 @@
 # licode document
+Licode installation from source is officially compatible with Ubuntu 20.04.
 - https://licode.readthedocs.io/en/master/from_source/
 
 - https://github.com/lynckia/licode
