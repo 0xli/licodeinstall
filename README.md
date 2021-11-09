@@ -139,6 +139,9 @@ socks5 = "127.0.0.1:1080"
 #或者HTTP代理
 proxy = "127.0.0.1:9999"
 
+#git clone https://github.com/lynckia/licode.git
+#cd licode
+
 #scripts/installUbuntuDeps
 modify script file
 licode mongodb Cannot change ownership to uid 1000, gid 1000
