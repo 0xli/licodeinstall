@@ -5,7 +5,8 @@ run licode in the docker, the rest on the host
 ```
 # 1. docker
 ```
-docker container licodede
+docker ps -a
+docker container start licodede
 docker exec -it licodedev bash
 ```
 # 2. licode
