@@ -1,15 +1,21 @@
+```
 on 2021-11-10 the cloud service exprired 
 after pay and restart the software on the server
 run licode in the docker, the rest on the host
+```
 # 1. docker
+```
 docker container licodede
 docker exec -it licodedev bash
-
+```
 # 2. licode
 ```
 cd licode
+# start mongod
 mongod --dbpath build/db --logpath build/mongoa.log --fork
+# licode include nuve and erizo
 scripts/initLicode.sh
+# web app
 scripts/initBasicExample
 ```
 https://node.kademlia.network:3001
