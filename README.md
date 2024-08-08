@@ -178,12 +178,14 @@ config.nuve.superserviceKey = '1168'; // default value: ''
 
 ```
 - minport and maxport must be consistent with the -p when create the docker container
-
+- sudo ufw allow 30000:30050/udp
+- sudo ufw allow 3000,3001,3004,8030/tcp
 ```
 //note, this won't work with all versions of libnice. With 0 all the available ports are used
 config.erizo.minport = 30000; // default value: 0
 config.erizo.maxport = 30050; // default value: 0
-
+// this should be udp port
+sudo ufw allow 30000:30050/udp
 sudo docker ps
 860e2df40368   1edc79a7ed54   "bash"        3 days ago   Up 3 days   0.0.0.0:3001->3001/tcp, :::3001->3001/tcp, 0.0.0.0:3300->3300/tcp, :::3300->3300/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:30000-30050->30000-30050/udp, :::30000-30050->30000-30050/udp   licodedev
 
