@@ -12,7 +12,8 @@ Licode installation from source is officially compatible with Ubuntu 20.04.
 
 - https://licode.readthedocs.io/en/stable/docker/
 # licode document - Ubuntu 22.04
-vi scripts/installUbuntuDeps.sh
+### gcc 
+- vi scripts/installUbuntuDeps.sh
 ```
 check_version(){
   if [[ $(lsb_release -rs) == "18.04" ]] || [[ $(lsb_release -rs) == "20.04" ]]
@@ -23,7 +24,7 @@ check_version(){
   fi
 }
 ```
-### gcc 
+maybe 
 ```
   282  sudo apt remove cpp-11 g++-11 gcc-11
   283  sudo apt autoremove
