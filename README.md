@@ -4,14 +4,25 @@ cd /sfu/licode
 ./scripts/initLicode.sh 
 ./scripts/initBasicExample.sh 
 ```
-# licode document
+# licode document - Ubuntu 20.04
 Licode installation from source is officially compatible with Ubuntu 20.04.
 - https://licode.readthedocs.io/en/master/from_source/
 
 - https://github.com/lynckia/licode
 
 - https://licode.readthedocs.io/en/stable/docker/
-
+# licode document - Ubuntu 22.04
+vi scripts/installUbuntuDeps.sh
+```
+check_version(){
+  if [[ $(lsb_release -rs) == "18.04" ]] || [[ $(lsb_release -rs) == "20.04" ]]
+  then
+     gcc_version=10
+  else
+     gcc_version=12
+  fi
+}
+```
 ## 代码分析
 https://www.cnblogs.com/bloglearning/p/11930199.html
 
