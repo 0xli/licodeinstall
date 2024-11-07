@@ -31,6 +31,15 @@ check_version(){
   285  sudo apt install gcc-11-base=11.4.0-1ubuntu1~22.04
   286  sudo apt install build-essential
 ```
+### mongodb
+```
+[licode] Starting mongodb
+mongod: error while loading shared libraries: libcrypto.so.1.1: cannot open shared object file: No such file or directory
+```
+```
+wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+```
 ### rabbitmq
 - erlang
 ```
