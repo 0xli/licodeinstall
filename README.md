@@ -23,6 +23,39 @@ check_version(){
   fi
 }
 ```
+### gcc 
+```
+  282  sudo apt remove cpp-11 g++-11 gcc-11
+  283  sudo apt autoremove
+  284  sudo apt install build-essential
+  285  sudo apt install gcc-11-base=11.4.0-1ubuntu1~22.04
+  286  sudo apt install build-essential
+```
+### rabbitmq
+- erlang
+```
+  296  wget -O- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | sudo apt-key add -
+  297  echo "deb https://packages.erlang-solutions.com/ubuntu $(lsb_release -cs) contrib" | sudo tee /etc/apt/sources.list.d/erlang-solutions.list
+  298  sudo apt update
+  299  sudo apt install erlang
+```
+rabbitmq preparationn
+```
+sudo apt install curl gnupg apt-transport-https -y
+curl -1sLf "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/com.rabbitmq.team.gpg > /dev/null
+curl -1sLf "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg > /dev/null
+curl -1sLf "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg > /dev/null
+
+sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+deb [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.E495BB49CC4BBE5B.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubuntu $(lsb_release -cs) main
+deb [signed-by=/usr/share/keyrings/io.cloudsmith.rabbitmq.9F4587F226208342.gpg] https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu $(lsb_release -cs) main
+EOF
+```
+install rabbitmq
+```
+sudo apt update
+sudo apt install rabbitmq-server
+```
 ## 代码分析
 https://www.cnblogs.com/bloglearning/p/11930199.html
 
