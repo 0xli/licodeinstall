@@ -1,3 +1,9 @@
+## 启动命令
+```
+cd /sfu/licode
+./scripts/initLicode.sh 
+./scripts/initBasicExample.sh 
+```
 # licode document
 Licode installation from source is officially compatible with Ubuntu 20.04.
 - https://licode.readthedocs.io/en/master/from_source/
