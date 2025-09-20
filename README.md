@@ -13,6 +13,13 @@ Licode installation from source is officially compatible with Ubuntu 20.04.
 - https://licode.readthedocs.io/en/stable/docker/
 # licode document - Ubuntu 22.04
 ### gcc 
+- lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04.5 LTS
+Release:	22.04
+Codename:	jammy
+
 - vi scripts/installUbuntuDeps.sh
 ```
 check_version(){
