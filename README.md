@@ -33,11 +33,11 @@ check_version(){
 ```
 maybe 
 ```
-  282  sudo apt remove cpp-11 g++-11 gcc-11
-  283  sudo apt autoremove
-  284  sudo apt install build-essential
-  285  sudo apt install gcc-11-base=11.4.0-1ubuntu1~22.04
-  286  sudo apt install build-essential
+  sudo apt remove cpp-11 g++-11 gcc-11
+  sudo apt autoremove
+  sudo apt install build-essential
+  sudo apt install gcc-11-base=11.4.0-1ubuntu1~22.04
+  sudo apt install build-essential
 ```
 ### mongodb
 ```
