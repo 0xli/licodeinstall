@@ -1,4 +1,51 @@
-1. cpp version
+0. two changes in scripts/installUbuntuDeps.sh
+# gcc
+gcc_version=0
+
+check_version(){
+  if [[ $(lsb_release -rs) == "18.04" ]] || [[ $(lsb_release -rs) == "20.04" ]]
+  then
+     gcc_version=10
+  else
+     gcc_version=13
+  fi
+}
+# python
+install_conan(){
+  python3 -m venv .venv || true
+  source .venv/bin/activate
+  pip install --upgrade pip
+  pip install conan==1.62.0
+} 
+    
+install_cpplint(){
+  source .venv/bin/activate
+  pip install cpplint==1.5.4
+} 
+
+1. cpp version need be 13
+gcc_version=0
+
+check_version(){
+  if [[ $(lsb_release -rs) == "18.04" ]] || [[ $(lsb_release -rs) == "20.04" ]]
+  then
+     gcc_version=10
+  else
+     gcc_version=13
+  fi
+}
+
+install_conan(){
+  python3 -m venv .venv || true
+  source .venv/bin/activate
+  pip install --upgrade pip
+  pip install conan==1.62.0
+} 
+    
+install_cpplint(){
+  source .venv/bin/activate
+  pip install cpplint==1.5.4
+} 
 
 2. python error
 
