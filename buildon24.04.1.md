@@ -265,3 +265,72 @@ If you tell me the output of `lsb_release -a` (20.04 vs 22.04 vs 24.04) and the 
 [1]: https://askubuntu.com/questions/1403619/mongodb-install-fails-on-ubuntu-22-04-depends-on-libssl1-1-but-it-is-not-insta?utm_source=chatgpt.com "Depends on libssl1.1 but it is not installable"
 [2]: https://stackoverflow.com/questions/73656873/unable-to-install-mongodb-in-ubuntu-22-04-mongodb-org-libssl1-1?utm_source=chatgpt.com "Unable to install mongodb in ubuntu 22.04 (mongodb-org, ..."
 [3]: https://askubuntu.com/questions/1408000/unable-to-locate-package-libssl1-1?utm_source=chatgpt.com "Unable to locate package libssl1.1"
+
+# 3. lib not found: AVUTIL-NOTFOUND when install Erizo
+You are now past the Python/Conan issues. The Erizo build is failing at CMake time with:
+
+`lib not found: AVUTIL-NOTFOUND`
+
+`avutil` is part of **FFmpeg** (library name typically `libavutil`). CMake cannot find the FFmpeg development libraries/headers on your system, so Licode’s `test_lib()` check aborts.
+
+### What to do (Ubuntu)
+
+1. Install FFmpeg dev packages (plus the ones Licode commonly needs):
+
+```bash
+sudo apt update
+sudo apt install -y \
+  pkg-config \
+  ffmpeg \
+  libavutil-dev libavcodec-dev libavformat-dev libswresample-dev libswscale-dev \
+  libvpx-dev
+```
+
+2. Confirm the library is visible to the linker:
+
+```bash
+pkg-config --modversion libavutil
+pkg-config --libs libavutil
+ldconfig -p | grep libavutil
+```
+
+If `pkg-config` can’t find `libavutil`, it means the `*-dev` packages did not install correctly or your `PKG_CONFIG_PATH` is unusual.
+
+3. Clean and rerun Erizo build:
+
+```bash
+./scripts/installErizo.sh
+```
+
+---
+
+## If you are on Ubuntu 24.04 and apt can’t provide the right FFmpeg dev packages
+
+On some minimal images or constrained repos, you may have `ffmpeg` runtime but missing `libavutil-dev`. If `apt` says “unable to locate package libavutil-dev”, enable the Ubuntu “universe” repo:
+
+```bash
+sudo add-apt-repository universe
+sudo apt update
+sudo apt install -y libavutil-dev libavcodec-dev libavformat-dev libswresample-dev libswscale-dev
+```
+
+---
+
+## One more likely blocker after this: OpenSSL 1.1 again (MongoDB / maybe others)
+
+Even after Erizo compiles, Licode may still fail later if the bundled MongoDB requires `libcrypto.so.1.1` (you already hit that earlier). So after you fix FFmpeg, if you see OpenSSL 1.1 errors again, you’ll need the `libssl1.1` compatibility fix we discussed earlier.
+
+---
+
+### Quick diagnostic I want you to run (no guessing)
+
+Run these and paste output:
+
+```bash
+lsb_release -a
+apt-cache policy libavutil-dev
+pkg-config --modversion libavutil || true
+```
+
+With those three outputs, I can tell you exactly whether you’re missing packages, missing `universe`, or dealing with a repo/version mismatch.
+
