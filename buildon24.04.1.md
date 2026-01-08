@@ -86,6 +86,9 @@ pip install conan==1.62.0 cpplint==1.5.4
 # verify
 conan --version
 cpplint --version
+
+# install setuptools
+. .venv/bin/activate && python -m pip install -U setuptools
 ```
 
 Then **rerun the Licode dependency script**, but you must ensure it **does not use `sudo pip3`** anymore. Patch it like this:
