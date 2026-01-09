@@ -1,0 +1,137 @@
+You are extremely close, and the new failure message is actually very informative:
+
+> `Received disconnect ...: no authentication methods enabled`
+
+That error occurs when your server-side configuration (often due to **conflicting `Match User wli` blocks**) results in **zero** usable authentication methods for `wli`. In your case, this is because you now have **two separate `Match User wli` rules** in different `.conf` files, and they are fighting each other:
+
+* `/etc/ssh/sshd_config.d/99-force-pubkey-wli.conf` (earlier you created)
+  likely sets `AuthenticationMethods publickey,password` (or similar)
+* `/etc/ssh/sshd_config.d/99-wli-keyonly.conf` (you just created)
+  sets `AuthenticationMethods publickey` and disables password/kbd-interactive
+
+Depending on order and exact directives inside each Match, sshd can end up in an inconsistent state and refuse all methods.
+
+The clean fix is: **use exactly ONE Match block for user wli** (or delete both and create one final file). Do not keep both.
+
+---
+
+## Fix (deterministic): remove the conflicting Match file and keep one correct policy
+
+### Step 1) On the server: show the content of both Match files
+
+Run:
+
+```bash
+sudo sed -n '1,200p' /etc/ssh/sshd_config.d/99-force-pubkey-wli.conf
+sudo sed -n '1,200p' /etc/ssh/sshd_config.d/99-wli-keyonly.conf
+```
+
+You will see both start with `Match User wli`.
+
+### Step 2) Disable the older file (recommended safest approach)
+
+Rename it so sshd won’t load it:
+
+```bash
+sudo mv /etc/ssh/sshd_config.d/99-force-pubkey-wli.conf /etc/ssh/sshd_config.d/99-force-pubkey-wli.conf.disabled
+```
+
+Now ensure your key-only file is the **only** `Match User wli` block:
+
+```bash
+sudo grep -RIn '^Match User wli' /etc/ssh/sshd_config /etc/ssh/sshd_config.d/*.conf 2>/dev/null
+```
+
+It should return exactly one line: your `99-wli-keyonly.conf`.
+
+### Step 3) Make `99-wli-keyonly.conf` correct and minimal
+
+Edit it:
+
+```bash
+sudo nano /etc/ssh/sshd_config.d/99-wli-keyonly.conf
+```
+
+Use exactly this (no extras):
+
+```text
+Match User wli
+  PubkeyAuthentication yes
+  AuthorizedKeysFile .ssh/authorized_keys
+  AuthenticationMethods publickey
+```
+
+Important: do **not** set `PasswordAuthentication no` inside this Match yet. It’s not necessary when `AuthenticationMethods publickey` is enforced, and it avoids edge-case interactions with PAM.
+
+### Step 4) Validate and restart
+
+```bash
+sudo sshd -t && sudo systemctl restart ssh
+```
+
+### Step 5) Verify the effective config for wli now
+
+Run:
+
+```bash
+sudo sshd -T -C user=wli,addr=67.180.41.93,host=154.64.235.176 | egrep 'authenticationmethods|pubkeyauthentication|passwordauthentication|kbdinteractiveauthentication'
+```
+
+You want to see:
+
+* `authenticationmethods publickey`
+* `pubkeyauthentication yes`
+
+Password settings can remain `yes`; they will be ignored for `wli` because `AuthenticationMethods publickey` takes precedence.
+
+---
+
+## Test from your Mac
+
+Now run:
+
+```bash
+ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes wli@154.64.235.176
+```
+
+It should log in with no password prompt.
+
+---
+
+## If it still fails, the next most likely cause
+
+A global `AuthenticationMethods publickey,password` (outside Match) could still apply if your Match is not being hit. That would be unusual since you’re matching the user explicitly, but if it happens:
+
+* Confirm your file is actually being included:
+
+  ```bash
+  sudo sshd -T | head -n 30
+  ```
+
+  (Look for “include” behavior is implicit; the main check is the `-T -C user=wli...` output.)
+
+* Ensure the username is exactly `wli` and you’re not logging in as another user by accident.
+
+---
+
+## Why you got “partial success” earlier
+
+Because the server’s effective policy was:
+
+* `authenticationmethods publickey,password`
+
+Your `sshd -T -C ...` confirmed exactly that. So key auth worked, but sshd demanded password as second factor.
+
+---
+
+### Minimal “do this now”
+
+On the server, run these three commands:
+
+```bash
+sudo mv /etc/ssh/sshd_config.d/99-force-pubkey-wli.conf /etc/ssh/sshd_config.d/99-force-pubkey-wli.conf.disabled
+sudo sshd -t && sudo systemctl restart ssh
+sudo sshd -T -C user=wli,addr=67.180.41.93,host=154.64.235.176 | egrep 'authenticationmethods|pubkeyauthentication'
+```
+
+If that last command shows `authenticationmethods publickey`, you are done and Mac SSH will stop asking for a password.
